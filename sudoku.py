@@ -14,8 +14,8 @@ def print_board(board):
         print(board[i])
 
 def solve(board, row=0, col=0):
-    print("solving", row, ", ", col)
     print_board(board)
+    print("solving", row, ", ", col)
 
     # if the space is blank, we need to solve for it
     if board[row][col] == " ":
@@ -28,7 +28,7 @@ def solve(board, row=0, col=0):
     # if we just finished solving for the last row and column, print the board
     if row == 8 and col == 8:
         print_board(board)
-        exit
+        exit()
     # otherwise, solve for the next spot
     else:
         next_row, next_col = next_row_col(row, col)
@@ -36,7 +36,7 @@ def solve(board, row=0, col=0):
 
 
 def solve_position(board, row, col):
-    valid_nums = [1,2,3,4,5,6,7,8,9]
+    valid_nums = ['1','2','3','4','5','6','7','8','9']
 
     while True:
         if len(valid_nums) == 0:
@@ -48,19 +48,26 @@ def solve_position(board, row, col):
 
 
 def is_value_at_position_valid(board, value, row, col):
+    print("numbers in row", numbers_in_row(board, row))
     if value in numbers_in_row(board, row):
+        print(value, "val in row")
         return False
+    print("numbers in col", numbers_in_col(board, col))
     if value in numbers_in_col(board, col):
+        print(value, "val in col")
         return False
+    print("numbers in block", numbers_in_block(board, row, col))
     if value in numbers_in_block(board, row, col):
+        print(value, "val in block")
         return False
+    print(value, "val is valid")
     return True
 
 
 def numbers_in_row(board, row):
     return board[row]
 def numbers_in_col(board, col):
-    return [board[col] for x in range(9)]
+    return [board[x][col] for x in range(9)]
 def numbers_in_block(board, row, col):
     row_block_num = row // 3
     col_block_num = col // 3
