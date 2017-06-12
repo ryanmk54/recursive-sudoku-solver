@@ -16,11 +16,6 @@ def print_board(board):
         print(board[i])
 
 def solve(prev_board, row=0, col=0):
-    # if we just finished solving for the last row and column, print the board
-    if row == 8 and col == 8:
-        print("board solved")
-        exit()
-
     board = copy.deepcopy(prev_board)
     next_row, next_col = next_row_col(row, col)
 
@@ -40,7 +35,13 @@ def solve(prev_board, row=0, col=0):
             if is_value_at_position_valid(board, num_to_try, row, col):
                 board[row][col] = num_to_try
                 print_board(board)
-                solve(board, next_row, next_col)
+
+                # if we just finished solving for the last row and column, print the board
+                if row == 8 and col == 8:
+                    print("board solved")
+                    exit()
+                else:
+                    solve(board, next_row, next_col)
     else:
         print("skipping", row, ", ", col)
         solve(board, next_row, next_col)
