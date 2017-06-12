@@ -1,3 +1,5 @@
+import copy
+
 def load(filename):
     file = open(filename, "r")
 
@@ -13,54 +15,49 @@ def print_board(board):
     for i in range(9):
         print(board[i])
 
-def solve(board, row=0, col=0):
-    print_board(board)
-    print("solving", row, ", ", col)
+def solve(prev_board, row=0, col=0):
+    # if we just finished solving for the last row and column, print the board
+    if row == 8 and col == 8:
+        print("board solved")
+        exit()
+
+    board = copy.deepcopy(prev_board)
+    next_row, next_col = next_row_col(row, col)
 
     # if the space is blank, we need to solve for it
     if board[row][col] == " ":
-        value_at_position = solve_position(board, row, col)
-        if value_at_position:
-            board[row][col] = value_at_position
-        else:
-            return
+        # numbers that haven't been tried yet
+        valid_nums = ['1','2','3','4','5','6','7','8','9']
 
-    # if we just finished solving for the last row and column, print the board
-    if row == 8 and col == 8:
-        print_board(board)
-        exit()
-    # otherwise, solve for the next spot
+        # do while loop
+        while True:
+            if len(valid_nums) == 0:
+                if row == 0 and col == 0:
+                    print("unable to solve board")
+                    exit()
+                return
+            num_to_try = valid_nums.pop()
+            if is_value_at_position_valid(board, num_to_try, row, col):
+                board[row][col] = num_to_try
+                print_board(board)
+                solve(board, next_row, next_col)
     else:
-        next_row, next_col = next_row_col(row, col)
+        print("skipping", row, ", ", col)
         solve(board, next_row, next_col)
 
 
-def solve_position(board, row, col):
-    valid_nums = ['1','2','3','4','5','6','7','8','9']
-
-    while True:
-        if len(valid_nums) == 0:
-            return False
-
-        num_to_try = valid_nums.pop()
-        if is_value_at_position_valid(board, num_to_try, row, col):
-            return num_to_try
-
-
 def is_value_at_position_valid(board, value, row, col):
-    print("numbers in row", numbers_in_row(board, row))
+    row_col = "(" + str(row) + "," + str(col) + ")"
     if value in numbers_in_row(board, row):
-        print(value, "val in row")
+        print(row_col, value, "in row")
         return False
-    print("numbers in col", numbers_in_col(board, col))
     if value in numbers_in_col(board, col):
-        print(value, "val in col")
+        print(row_col, value, "in col")
         return False
-    print("numbers in block", numbers_in_block(board, row, col))
     if value in numbers_in_block(board, row, col):
-        print(value, "val in block")
+        print(row_col, value, "in block")
         return False
-    print(value, "val is valid")
+    print(row_col, value, "is valid")
     return True
 
 
@@ -92,4 +89,5 @@ def next_row_col(row, col):
 
 
 board = load("1.board")
+print_board(board)
 solve(board)
